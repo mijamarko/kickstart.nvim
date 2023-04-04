@@ -47,7 +47,19 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      {
+        'j-hui/fidget.nvim',
+        opts = {
+          text = {
+            --spinner = "meter"
+            --spinner = "circle_halves"
+            spinner = "bouncing_bar"
+          },
+          window = {
+            blend = 0
+          }
+        }
+      },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -173,8 +185,6 @@ vim.o.rnu = true
 -- Possibly set transparent bg
 vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
 vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-vim.api.nvim_set_hl(0, "FidgetTask", { bg = "none" })
-vim.api.nvim_set_hl(0, "FloatShadowThrough", { bg = "none" })
 -- Enable mouse mode
 vim.o.mouse = 'a'
 

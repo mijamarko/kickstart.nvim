@@ -4,9 +4,29 @@
 -- See the kickstart.nvim README for more information
 return {
 	{
-		"windwp/nvim-autopairs",
+		'windwp/nvim-autopairs',
 		config = function()
-			require("nvim-autopairs").setup {}
+			require('nvim-autopairs').setup {}
 		end
-	}
+	}, {
+	'abecodes/tabout.nvim',
+	config = function()
+		require('tabout').setup {
+			tabkey = '<Tab>',
+			act_as_tab = true,
+			completion = true,
+			tabouts = {
+				{ open = '"', close = '"' },
+				{ open = "'", close = "'" },
+				{ open = '`', close = '`' },
+				{ open = '(', close = ')' },
+				{ open = '[', close = ']' },
+				{ open = '{', close = '}' }
+			},
+			ignore_beginning = true
+		}
+	end,
+	wants = { 'nvim-treesitter' },
+	after = { 'nvim-cmp' }
+}
 }
