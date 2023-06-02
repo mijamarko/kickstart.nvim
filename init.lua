@@ -51,12 +51,14 @@ require('lazy').setup({
         'j-hui/fidget.nvim',
         opts = {
           text = {
-            --spinner = "meter"
+            -- spinner = "meter"
             --spinner = "circle_halves"
             spinner = "bouncing_bar"
           },
           window = {
-            blend = 0
+            blend = 0,
+            zindex = 50,
+            border = 'none'
           }
         }
       },
@@ -92,9 +94,18 @@ require('lazy').setup({
   {
     -- Theme inspired by Atom
     'folke/tokyonight.nvim',
+    lazy = false,
     priority = 1000,
+    opts = {
+      transparent = true,
+      dim_inactive = false,
+      styles = {
+        sidebars = 'transparent',
+        floats = 'transparent',
+      },
+    },
     config = function()
-      vim.cmd.colorscheme 'tokyonight-storm'
+      vim.cmd([[colorscheme tokyonight-storm]])
     end,
   },
 
@@ -185,6 +196,7 @@ vim.o.rnu = true
 -- Possibly set transparent bg
 vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
 vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+
 -- Enable mouse mode
 vim.o.mouse = 'a'
 
@@ -255,15 +267,24 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
+local actions = require('telescope.actions')
 require('telescope').setup {
   defaults = {
     mappings = {
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
+        ['<Esc>'] = actions.close
       },
     },
   },
+  pickers = {
+    buffers = {
+      mappings = {
+        i = { ['<C-d>'] = actions.delete_buffer }
+      }
+    }
+  }
 }
 
 -- Enable telescope fzf native, if installed
