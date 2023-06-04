@@ -97,12 +97,7 @@ require('lazy').setup({
     lazy = false,
     priority = 1000,
     opts = {
-      transparent = true,
       dim_inactive = false,
-      styles = {
-        sidebars = 'transparent',
-        floats = 'transparent',
-      },
     },
     config = function()
       vim.cmd([[colorscheme tokyonight-storm]])
@@ -194,8 +189,8 @@ vim.wo.number = true
 vim.o.rnu = true
 
 -- Possibly set transparent bg
-vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+-- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+-- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -242,6 +237,8 @@ vim.opt.backup = false
 
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
+
+vim.opt.colorcolumn = "80"
 
 vim.opt.isfname:append("@-@")
 -- [[ Basic Keymaps ]]
