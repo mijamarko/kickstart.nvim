@@ -1,4 +1,4 @@
--- Set <space> as the leader key
+--' Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
@@ -75,7 +75,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',          opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -91,19 +91,35 @@ require('lazy').setup({
     },
   },
 
+  -- {
+  --   -- Theme
+  --   -- inspired
+  --   -- by
+  --   -- Atom
+  --   'folke/tokyonight.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = {
+  --     dim_inactive = false,
+  --   },
+  --   config = function()
+  --     vim.cmd([[colorscheme tokyonight-day]])
+  --   end,
+  -- },
   {
-    -- Theme inspired by Atom
-    'folke/tokyonight.nvim',
-    lazy = false,
-    priority = 1000,
-    opts = {
-      dim_inactive = false,
-    },
-    config = function()
-      vim.cmd([[colorscheme tokyonight-storm]])
-    end,
+    'sainnhe/edge',
   },
+  -- {
+  --   'EdenEast/nightfox.nvim',
+  --   config = function()
+  --     vim.cmd([[colorscheme dayfox]])
+  --   end,
+  -- },
 
+  -- {
+  --   'catppuccin/nvim',
+  --   name = 'catpuccin',
+  -- },
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
@@ -111,7 +127,8 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'tokyonight',
+        theme = 'edge',
+        -- theme = 'tokyonight',
         component_separators = '|',
         section_separators = '',
       },
@@ -130,10 +147,17 @@ require('lazy').setup({
   },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim',         opts = {} },
+  { 'numToStr/Comment.nvim', opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
-  { 'nvim-telescope/telescope.nvim', version = '*', dependencies = { 'nvim-lua/plenary.nvim' } },
+  {
+    'nvim-telescope/telescope.nvim',
+    version = '*',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    extensions = {
+      'refactoring'
+    }
+  },
 
   -- Fuzzy Finder Algorithm which requires local dependencies to be built.
   -- Only load if `make` is available. Make sure you have the system
@@ -178,9 +202,14 @@ require('lazy').setup({
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
-
 -- Set highlight on search
 vim.o.hlsearch = false
+
+vim.o.cursorline = true
+--Theme settings
+vim.g.edge_better_performance = 1
+vim.cmd.colorscheme "edge"
+vim.o.bg = "light"
 
 -- Make line numbers default
 vim.wo.number = true
@@ -191,6 +220,14 @@ vim.o.rnu = true
 -- Possibly set transparent bg
 -- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
 -- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+
+vim.o.splitright = true
+
+-- NetRW settings
+vim.g.netrw_liststype = 3
+vim.g.netrw_banner = 0
+vim.g.netrw_browse_split = 2
+vim.g.netrw_winsize = 25
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -242,6 +279,25 @@ vim.opt.colorcolumn = "80"
 
 vim.opt.isfname:append("@-@")
 -- [[ Basic Keymaps ]]
+
+-- refactoring keymaps
+-- vim.api.nvim_set_keymap('v', '<leader>re', [[<Esc><Cmd>lua require('refactoring').refactor('Extract Function')<CR>]],
+--   { noremap = true, silent = true, expr = false })
+-- vim.api.nvim_set_keymap("v", "<leader>rv", [[ <Esc><Cmd>lua require('refactoring').refactor('Extract Variable')<CR>]],
+--   { noremap = true, silent = true, expr = false })
+-- vim.api.nvim_set_keymap("v", "<leader>ri", [[ <Esc><Cmd>lua require('refactoring').refactor('Inline Variable')<CR>]],
+--   { noremap = true, silent = true, expr = false })
+-- vim.api.nvim_set_keymap("n", "<leader>rb", [[ <Cmd>lua require('refactoring').refactor('Extract Block')<CR>]],
+--   { noremap = true, silent = true, expr = false })
+vim.api.nvim_set_keymap(
+  'v',
+  '<leader>rr',
+  '<Esc><Cmd>lua require("telescope").extensions.refactoring.refactors()<CR>',
+  {
+    noremap = true,
+    desc = 'Select [R]efactor'
+  }
+)
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`

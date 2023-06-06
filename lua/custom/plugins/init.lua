@@ -3,47 +3,46 @@
 --
 -- See the kickstart.nvim README for more information
 return {
-		{
-			'windwp/nvim-autopairs',
-			config = function()
-				require('nvim-autopairs').setup {}
-			end
-		}, {
-		'abecodes/tabout.nvim',
+	{
+		'windwp/nvim-autopairs',
 		config = function()
-			require('tabout').setup {
-				tabkey = '<Tab>',
-				act_as_tab = true,
-				completion = true,
-				tabouts = {
-					{ open = '"', close = '"' },
-					{ open = "'", close = "'" },
-					{ open = '`', close = '`' },
-					{ open = '(', close = ')' },
-					{ open = '[', close = ']' },
-					{ open = '{', close = '}' }
-				},
-				ignore_beginning = true
-			}
-		end,
-		wants = { 'nvim-treesitter' },
-		after = { 'nvim-cmp' }
-	},
-		{
-			'NvChad/nvim-colorizer.lua',
-			config = function()
-				require('colorizer').setup {
-					filetypes = {
-						'css',
-						'javascript',
-						'typescript',
-						html = {
-							mode = 'foreground',
-						}
-					},
-				}
-			end
+			require('nvim-autopairs').setup {}
+		end
+	}, {
+	'abecodes/tabout.nvim',
+	config = function()
+		require('tabout').setup {
+			tabkey = '<Tab>',
+			act_as_tab = true,
+			completion = true,
+			tabouts = {
+				{ open = '"', close = '"' },
+				{ open = "'", close = "'" },
+				{ open = '`', close = '`' },
+				{ open = '(', close = ')' },
+				{ open = '[', close = ']' },
+				{ open = '{', close = '}' }
+			},
+			ignore_beginning = true
 		}
+	end,
+	wants = { 'nvim-treesitter' },
+	after = { 'nvim-cmp' }
+},
+	{
+		'NvChad/nvim-colorizer.lua',
+		config = function()
+			require('colorizer').setup {
+				filetypes = {
+					'css',
+					'javascript',
+					'typescript',
+					html = {
+						mode = 'foreground',
+					}
+				},
+			}
+		end
 	},
 	{
 		'ThePrimeagen/refactoring.nvim',
@@ -61,4 +60,15 @@ return {
 			'nvim-lua/plenary.nvim',
 			'nvim-treesitter/nvim-treesitter'
 		},
+	},
+	{
+		'nvim-telescope/telescope-file-browser.nvim',
+		dependencies = {
+			'nvim-telescope/telescope.nvim',
+			'nvim-lua/plenary.nvim'
+		}
+	},
+	{
+		'nvim-tree/nvim-web-devicons'
 	}
+}
