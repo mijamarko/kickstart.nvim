@@ -49,10 +49,9 @@ require('lazy').setup({
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       {
         'j-hui/fidget.nvim',
+        tag = 'legacy',
         opts = {
           text = {
-            -- spinner = "meter"
-            --spinner = "circle_halves"
             spinner = "bouncing_bar"
           },
           window = {
@@ -71,7 +70,8 @@ require('lazy').setup({
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
-    dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip' },
+    dependencies = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip',
+      'rafamadriz/friendly-snippets' },
   },
 
   -- Useful plugin to show you pending keybinds.
@@ -91,24 +91,24 @@ require('lazy').setup({
     },
   },
 
-  -- {
-  --   -- Theme
-  --   -- inspired
-  --   -- by
-  --   -- Atom
-  --   'folke/tokyonight.nvim',
-  --   lazy = false,
-  --   priority = 1000,
-  --   opts = {
-  --     dim_inactive = false,
-  --   },
-  --   config = function()
-  --     vim.cmd([[colorscheme tokyonight-day]])
-  --   end,
-  -- },
   {
-    'sainnhe/edge',
+    --   -- Theme
+    --   -- inspired
+    --   -- by
+    --   -- Atom
+    'folke/tokyonight.nvim',
+    lazy = false,
+    priority = 1000,
+    opts = {
+      dim_inactive = false,
+    },
+    config = function()
+      vim.cmd([[colorscheme tokyonight-storm]])
+    end,
   },
+  -- {
+  --  'sainnhe/edge',
+  -- },
   -- {
   --   'EdenEast/nightfox.nvim',
   --   config = function()
@@ -127,8 +127,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'edge',
-        -- theme = 'tokyonight',
+        theme = 'tokyonight',
         component_separators = '|',
         section_separators = '',
       },
@@ -138,12 +137,14 @@ require('lazy').setup({
   {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl',
+    opts = {},
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
-    opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
-    },
+    -- opts = {
+    --  char = '┊',
+    --  show_trailing_blankline_indent = false,
+    -- },
   },
 
   -- "gc" to comment visual regions/lines
@@ -152,25 +153,26 @@ require('lazy').setup({
   -- Fuzzy Finder (files, lsp, etc)
   {
     'nvim-telescope/telescope.nvim',
-    version = '*',
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    branch = '0.1.x',
+    dependencies = { 'nvim-lua/plenary.nvim',
+      -- Fuzzy Finder Algorithm which requires local dependencies to be built.
+      -- Only load if `make` is available. Make sure you have the system
+      -- requirements installed.
+      {
+        'nvim-telescope/telescope-fzf-native.nvim',
+        -- NOTE: If you are having trouble with this installation,
+        --       refer to the README for telescope-fzf-native for more instructions.
+        build = 'make',
+        cond = function()
+          return vim.fn.executable 'make' == 1
+        end,
+      }
+    },
     extensions = {
       'refactoring'
     }
   },
 
-  -- Fuzzy Finder Algorithm which requires local dependencies to be built.
-  -- Only load if `make` is available. Make sure you have the system
-  -- requirements installed.
-  {
-    'nvim-telescope/telescope-fzf-native.nvim',
-    -- NOTE: If you are having trouble with this installation,
-    --       refer to the README for telescope-fzf-native for more instructions.
-    build = 'make',
-    cond = function()
-      return vim.fn.executable 'make' == 1
-    end,
-  },
 
   {
     -- Highlight, edit, and navigate code
@@ -178,9 +180,10 @@ require('lazy').setup({
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
-    config = function()
-      pcall(require('nvim-treesitter.install').update { with_sync = true })
-    end,
+    build = ':TSUpdate',
+    --config = function()
+    --  pcall(require('nvim-treesitter.install').update { with_sync = true })
+    --end,
   },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
@@ -206,10 +209,6 @@ require('lazy').setup({
 vim.o.hlsearch = false
 
 vim.o.cursorline = true
---Theme settings
-vim.g.edge_better_performance = 1
-vim.cmd.colorscheme "edge"
-vim.o.bg = "light"
 
 -- Make line numbers default
 vim.wo.number = true
@@ -252,7 +251,6 @@ vim.wo.signcolumn = 'yes'
 
 -- Decrease update time
 vim.o.updatetime = 250
-vim.o.timeout = true
 vim.o.timeoutlen = 300
 
 -- Set completeopt to have a better completion experience
@@ -274,8 +272,6 @@ vim.opt.backup = false
 
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
-
-vim.opt.colorcolumn = "80"
 
 vim.opt.isfname:append("@-@")
 -- [[ Basic Keymaps ]]
@@ -485,7 +481,6 @@ end
 local servers = {
   -- clangd = {},
   gopls = {},
-  pyright = {},
   rust_analyzer = {},
   --ocamllsp = {},
   tsserver = {},
