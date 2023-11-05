@@ -125,10 +125,6 @@ require('lazy').setup({
   },
 
   {
-    --   -- Theme
-    --   -- inspired
-    --   -- by
-    --   -- Atom
     'folke/tokyonight.nvim',
     lazy = false,
     priority = 1000,
@@ -139,20 +135,6 @@ require('lazy').setup({
       vim.cmd([[colorscheme tokyonight-storm]])
     end,
   },
-  -- {
-  --  'sainnhe/edge',
-  -- },
-  -- {
-  --   'EdenEast/nightfox.nvim',
-  --   config = function()
-  --     vim.cmd([[colorscheme dayfox]])
-  --   end,
-  -- },
-
-  -- {
-  --   'catppuccin/nvim',
-  --   name = 'catpuccin',
-  -- },
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
@@ -172,12 +154,6 @@ require('lazy').setup({
     'lukas-reineke/indent-blankline.nvim',
     main = 'ibl',
     opts = {},
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help indent_blankline.txt`
-    -- opts = {
-    --  char = '┊',
-    --  show_trailing_blankline_indent = false,
-    -- },
   },
 
   -- "gc" to comment visual regions/lines
@@ -246,10 +222,6 @@ vim.wo.number = true
 
 -- Enable relative line numbers
 vim.o.rnu = true
-
--- Possibly set transparent bg
--- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
--- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 
 vim.o.splitright = true
 
