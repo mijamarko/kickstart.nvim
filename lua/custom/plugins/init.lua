@@ -5,9 +5,8 @@
 return {
 	{
 		'windwp/nvim-autopairs',
-		config = function()
-			require('nvim-autopairs').setup {}
-		end
+		event = "InsertEnter",
+		opts = {}
 	}, {
 	'abecodes/tabout.nvim',
 	config = function()
@@ -69,6 +68,62 @@ return {
 		}
 	},
 	{
-		'nvim-tree/nvim-web-devicons'
+		'nvim-telescope/telescope-ui-select.nvim'
+	},
+	{
+		'folke/zen-mode.nvim'
+	},
+	{
+		"iamcco/markdown-preview.nvim",
+		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+		ft = { "markdown" },
+		build = function() vim.fn["mkdp#util#install"]() end,
+	},
+	{
+		'nvim-treesitter/nvim-treesitter-context'
+	},
+	{
+		'hiphish/rainbow-delimiters.nvim'
+	},
+	{
+		'karb94/neoscroll.nvim',
+		config = function()
+			require('neoscroll').setup {}
+		end
+	},
+	{
+		'ggandor/leap.nvim',
+		config = function()
+			require('leap').add_default_mappings()
+		end
+	},
+	{
+		"Olical/conjure",
+		ft = { "clojure" },
+		dependencies = {
+			{
+				"PaterJason/cmp-conjure",
+				config = function()
+					local cmp = require("cmp")
+					local config = cmp.get_config()
+					table.insert(config.sources, {
+						name = "buffer",
+						option = {
+							sources = {
+								{ name = "conjure" },
+							},
+						},
+					})
+					cmp.setup(config)
+				end,
+			},
+		},
+		config = function(_, opts)
+			require("conjure.main").main()
+			require("conjure.mapping")["on-filetype"]()
+		end,
+		init = function()
+			vim.g["conjure#debug"] = true
+		end
 	}
 }

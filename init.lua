@@ -123,18 +123,22 @@ require('lazy').setup({
       end,
     },
   },
-
   {
-    'folke/tokyonight.nvim',
-    lazy = false,
-    priority = 1000,
+    'navarasu/onedark.nvim',
     opts = {
-      dim_inactive = false,
-    },
-    config = function()
-      vim.cmd([[colorscheme tokyonight-storm]])
-    end,
+    }
   },
+  -- {
+  --   'folke/tokyonight.nvim',
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = {
+  --     dim_inactive = false,
+  --   },
+  --   config = function()
+  --     vim.cmd([[colorscheme tokyonight-storm]])
+  --   end,
+  -- },
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
@@ -142,7 +146,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'tokyonight',
+        theme = 'onedark',
         component_separators = '|',
         section_separators = '',
       },
@@ -181,8 +185,6 @@ require('lazy').setup({
       'refactoring'
     }
   },
-
-
   {
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
@@ -190,16 +192,13 @@ require('lazy').setup({
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
     build = ':TSUpdate',
-    --config = function()
-    --  pcall(require('nvim-treesitter.install').update { with_sync = true })
-    --end,
   },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
   require 'kickstart.plugins.autoformat',
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
@@ -210,6 +209,7 @@ require('lazy').setup({
   { import = 'custom.plugins' },
 }, {})
 
+require('onedark').load()
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- Set highlight on search
@@ -280,14 +280,6 @@ vim.opt.isfname:append("@-@")
 -- [[ Basic Keymaps ]]
 
 -- refactoring keymaps
--- vim.api.nvim_set_keymap('v', '<leader>re', [[<Esc><Cmd>lua require('refactoring').refactor('Extract Function')<CR>]],
---   { noremap = true, silent = true, expr = false })
--- vim.api.nvim_set_keymap("v", "<leader>rv", [[ <Esc><Cmd>lua require('refactoring').refactor('Extract Variable')<CR>]],
---   { noremap = true, silent = true, expr = false })
--- vim.api.nvim_set_keymap("v", "<leader>ri", [[ <Esc><Cmd>lua require('refactoring').refactor('Inline Variable')<CR>]],
---   { noremap = true, silent = true, expr = false })
--- vim.api.nvim_set_keymap("n", "<leader>rb", [[ <Cmd>lua require('refactoring').refactor('Extract Block')<CR>]],
---   { noremap = true, silent = true, expr = false })
 vim.api.nvim_set_keymap(
   'v',
   '<leader>rr',
@@ -336,11 +328,31 @@ require('telescope').setup {
         i = { ['<C-d>'] = actions.delete_buffer + actions.move_to_top }
       }
     }
+  },
+  extensions = {
+    file_browser = {
+      theme = 'ivy',
+      hijack_netrw = true,
+      hidden = {
+        file_browser = true,
+        folder_browser = true
+      }
+    },
+    ['ui-select'] = {
+      require('telescope.themes').get_cursor {
+        results_title = true,
+        layout_config = {
+          height = 12,
+        },
+      }
+    }
   }
 }
 
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
+require('telescope').load_extension "file_browser"
+require('telescope').load_extension "ui-select"
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
@@ -360,13 +372,15 @@ vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { de
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
+vim.keymap.set('n', '<leader>fb', require('telescope').extensions.file_browser.file_browser,
+  { desc = '[F]ile [B]rowser' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vim', 'bash' },
+    ensure_installed = { 'c', 'go', 'lua', 'vim', 'bash', 'clojure', 'java' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = true,
@@ -517,6 +531,7 @@ local servers = {
       telemetry = { enable = false },
     },
   },
+  clojure_lsp = {},
 }
 
 -- Setup neovim lua configuration
@@ -592,5 +607,21 @@ cmp.setup {
   },
 }
 
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
+-- vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
+--   pattern = '*',
+--   -- callback = function()
+--   --   if vim.fn.winnr('$') == 1 then
+--   --     vim.cmd('wincmd |')
+--   --   else
+--   --     vim.cmd('wincmd =')
+--   --   end
+--   -- end
+--   command = 'ZenMode'
+-- })
+--
+-- vim.api.nvim_create_autocmd({ 'BufLeave', 'BufWinLeave' }, {
+--   pattern = '*',
+--   command = 'ZenMode'
+-- })
+-- -- The line beneath this is called `modeline`. See `:help modeline`
+-- -- vim: ts=2 sts=2 sw=2 et
