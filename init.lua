@@ -1,8 +1,29 @@
+-- vim.g.mapleader = ' '
+-- vim.g.maplocalleader = ','
+-- -- lazy config, init plugins
+-- local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+-- if not vim.loop.fs_stat(lazypath) then
+--     vim.fn.system {
+--         'git',
+--         'clone',
+--         '--filter=blob:none',
+--         'https://github.com/folke/lazy.nvim.git',
+--         '--branch=stable', -- latest stable release
+--         lazypath,
+--     }
+-- end
+-- vim.opt.rtp:prepend(lazypath)
+--
+-- -- init plugins
+-- require('lazy').setup('plugins')
+-- require('kec.remap')
+-- require('kec.set')
+-- require('kickstart.plugins.autoformat')
 --' Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+vim.g.maplocalleader = ','
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
@@ -128,30 +149,20 @@ require('lazy').setup({
     opts = {
     }
   },
+  require 'plugins.lualine',
   -- {
-  --   'folke/tokyonight.nvim',
-  --   lazy = false,
-  --   priority = 1000,
+  --   -- Set lualine as statusline
+  --   'nvim-lualine/lualine.nvim',
+  --   -- See `:help lualine.txt`
   --   opts = {
-  --     dim_inactive = false,
+  --     options = {
+  --       icons_enabled = false,
+  --       theme = 'onedark',
+  --       component_separators = '|',
+  --       section_separators = '',
+  --     },
   --   },
-  --   config = function()
-  --     vim.cmd([[colorscheme tokyonight-storm]])
-  --   end,
   -- },
-  {
-    -- Set lualine as statusline
-    'nvim-lualine/lualine.nvim',
-    -- See `:help lualine.txt`
-    opts = {
-      options = {
-        icons_enabled = false,
-        theme = 'onedark',
-        component_separators = '|',
-        section_separators = '',
-      },
-    },
-  },
 
   {
     -- Add indentation guides even on blank lines
@@ -224,6 +235,7 @@ vim.wo.number = true
 vim.o.rnu = true
 
 vim.o.splitright = true
+vim.o.helpheight = 30
 
 -- NetRW settings
 vim.g.netrw_liststype = 3
@@ -279,6 +291,13 @@ vim.opt.sidescrolloff = 8
 vim.opt.isfname:append("@-@")
 -- [[ Basic Keymaps ]]
 
+-- [[ moving lines ]]
+local moveline = require('moveline')
+vim.keymap.set('n', '<M-j>', moveline.down)
+vim.keymap.set('n', '<M-k>', moveline.up)
+vim.keymap.set('v', '<M-j>', moveline.block_down)
+vim.keymap.set('v', '<M-k>', moveline.block_up)
+
 -- refactoring keymaps
 vim.api.nvim_set_keymap(
   'v',
@@ -331,7 +350,7 @@ require('telescope').setup {
   },
   extensions = {
     file_browser = {
-      theme = 'ivy',
+      -- theme = 'ivy',
       hijack_netrw = true,
       hidden = {
         file_browser = true,
@@ -342,7 +361,7 @@ require('telescope').setup {
       require('telescope.themes').get_cursor {
         results_title = true,
         layout_config = {
-          height = 12,
+          height = 30,
         },
       }
     }
@@ -352,7 +371,7 @@ require('telescope').setup {
 -- Enable telescope fzf native, if installed
 pcall(require('telescope').load_extension, 'fzf')
 require('telescope').load_extension "file_browser"
-require('telescope').load_extension "ui-select"
+-- require('telescope').load_extension "ui-select"
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
@@ -384,7 +403,6 @@ vim.defer_fn(function()
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = true,
-
     highlight = { enable = true },
     indent = { enable = true },
     incremental_selection = {
@@ -566,12 +584,19 @@ local luasnip = require 'luasnip'
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup {}
 
+
+cmp.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
 cmp.setup {
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body)
     end,
   },
+  -- view = {
+  --   docs = {
+  --     auto_open = true
+  --   }
+  -- },
   mapping = cmp.mapping.preset.insert {
     ['<C-n>'] = cmp.mapping.select_next_item(),
     ['<C-p>'] = cmp.mapping.select_prev_item(),
@@ -582,30 +607,59 @@ cmp.setup {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
-    ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_locally_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.locally_jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
+    -- ['<Tab>'] = cmp.mapping(function(fallback)
+    --   if cmp.visible() then
+    --     cmp.select_next_item()
+    --   elseif luasnip.expand_or_locally_jumpable() then
+    --     luasnip.expand_or_jump()
+    --   else
+    --     fallback()
+    --   end
+    -- end, { 'i', 's' }),
+    -- ['<S-Tab>'] = cmp.mapping(function(fallback)
+    --   if cmp.visible() then
+    --     cmp.select_prev_item()
+    --   elseif luasnip.locally_jumpable(-1) then
+    --     luasnip.jump(-1)
+    --   else
+    --     fallback()
+    --   end
+    -- end, { 'i', 's' }),
   },
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
   },
+  formatting = {
+    format = function(entry, vim_item)
+      if vim.tbl_contains({ 'path' }, entry.source.name) then
+        local icon, hl_group = require('nvim-web-devicons').get_icon(entry:get_completion_item().label)
+        if icon then
+          vim_item.kind = icon
+          vim_item.kind_hl_group = hl_group
+          return vim_item
+        end
+      end
+      return require('lspkind').cmp_format({ with_text = false })(entry, vim_item)
+    end
+  },
 }
+
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+  group = vim.api.nvim_create_augroup("help_window_right", {}),
+  pattern = { "*.txt" },
+  callback = function()
+    if vim.o.filetype == 'help' then vim.cmd.wincmd("L") end
+  end
+})
+
+vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+  group = vim.api.nvim_create_augroup("ConjureLogGroup", { clear = true }),
+  pattern = "*conjure-log-\\d*.cljc",
+  callback = function()
+    vim.diagnostic.disable(0)
+  end
+})
 
 -- vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
 --   pattern = '*',
@@ -623,5 +677,5 @@ cmp.setup {
 --   pattern = '*',
 --   command = 'ZenMode'
 -- })
--- -- The line beneath this is called `modeline`. See `:help modeline`
--- -- vim: ts=2 sts=2 sw=2 et
+-- The line beneath this is called `modeline`. See `:help modeline`
+-- vim: ts=2 sts=2 sw=2 et

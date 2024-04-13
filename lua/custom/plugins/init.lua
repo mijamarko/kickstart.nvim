@@ -1,12 +1,18 @@
 -- You can add your own plugins here or in other files in this directory!
---  I promise not to create any merge conflicts in this directory :)
+-- I promise not to create any merge conflicts in this directory :)
 --
 -- See the kickstart.nvim README for more information
 return {
 	{
+		'willothy/moveline.nvim',
+		build = 'make',
+	},
+	{
 		'windwp/nvim-autopairs',
 		event = "InsertEnter",
-		opts = {}
+		opts = {
+			enable_check_bracket_line = false
+		}
 	}, {
 	'abecodes/tabout.nvim',
 	config = function()
@@ -28,21 +34,6 @@ return {
 	wants = { 'nvim-treesitter' },
 	after = { 'nvim-cmp' }
 },
-	{
-		'NvChad/nvim-colorizer.lua',
-		config = function()
-			require('colorizer').setup {
-				filetypes = {
-					'css',
-					'javascript',
-					'typescript',
-					html = {
-						mode = 'foreground',
-					}
-				},
-			}
-		end
-	},
 	{
 		'ThePrimeagen/refactoring.nvim',
 		config = function()
@@ -68,7 +59,25 @@ return {
 		}
 	},
 	{
-		'nvim-telescope/telescope-ui-select.nvim'
+		'nvim-telescope/telescope-ui-select.nvim' },
+	{
+		'nvim-tree/nvim-web-devicons'
+	},
+	--CLOJURE/LISP SPECIFIC, I THINK, SOMEBODY HELP ME
+	{
+		'tpope/vim-surround'
+	},
+	{
+		'guns/vim-sexp'
+	},
+	{
+		'tpope/vim-sexp-mappings-for-regular-people'
+	},
+	{
+		'tpope/vim-unimpaired'
+	},
+	{
+		'onsails/lspkind.nvim'
 	},
 	{
 		'folke/zen-mode.nvim'
@@ -90,6 +99,9 @@ return {
 		config = function()
 			require('neoscroll').setup {}
 		end
+	},
+	{
+		'fladson/vim-kitty'
 	},
 	{
 		'ggandor/leap.nvim',
@@ -123,7 +135,16 @@ return {
 			require("conjure.mapping")["on-filetype"]()
 		end,
 		init = function()
-			vim.g["conjure#debug"] = true
+			vim.g["conjure#debug"] = false
 		end
+	},
+	{
+		'tpope/vim-dispatch'
+	},
+	{
+		'clojure-vim/vim-jack-in'
+	},
+	{
+		'radenling/vim-dispatch-neovim'
 	}
 }
